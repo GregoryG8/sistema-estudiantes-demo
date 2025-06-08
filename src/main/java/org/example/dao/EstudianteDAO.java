@@ -118,17 +118,47 @@ public class EstudianteDAO {
         return false;
     }
 
+    public boolean eliminarEstudiante(Estudiante estudiante) {
+        PreparedStatement preparedStatement;
+        Connection conexion = Conexion.getConexion();
+        String sql = "DELETE FROM estudiante WHERE id_estudiante = ?";
+        try {
+            preparedStatement = conexion.prepareStatement(sql);
+            preparedStatement.setInt(1, estudiante.getIdEstudiante());
+            preparedStatement.executeUpdate();
+            return true;
+        } catch (Exception e) {
+            System.out.println("Error al eliminar estudiante: " + e.getMessage());
+        } finally {
+            try {
+                conexion.close();
+            } catch (Exception e) {
+                System.out.println("Error al cerrar recursos: " + e.getMessage());
+            }
+        }
+        return false;
+    }
+
     public static void main(String[] args) {
         var estudiantes = new EstudianteDAO();
 
-        // Actualizar estudiante
-        var actualizarEstudiante = new Estudiante(4, "Gustambo", "Kunst", "", "");
-        var actualizado = estudiantes.actualizarEstudiante(actualizarEstudiante);
-        if (actualizado) {
-            System.out.println("Estudiante actualizado exitosamente: " + actualizarEstudiante);
+        // Eliminar estudiante
+        var eliminarEstudiante = new Estudiante(3);
+        var eliminado = estudiantes.eliminarEstudiante(eliminarEstudiante);
+        if (eliminado) {
+            System.out.println("Estudiante eliminado exitosamente: " + eliminarEstudiante);
         } else {
-            System.out.println("Error al actualizar estudiante.");
+            System.out.println("Error al eliminar estudiante.");
         }
+
+        // Actualizar estudiante
+//        var actualizarEstudiante = new Estudiante(4, "Gustambo", "Kunst", "", "");
+//        var actualizado = estudiantes.actualizarEstudiante(actualizarEstudiante);
+//        if (actualizado) {
+//            System.out.println("Estudiante actualizado exitosamente: " + actualizarEstudiante);
+//        } else {
+//            System.out.println("Error al actualizar estudiante.");
+//        }
 
         //agregar estudiante
 //        var nuevoEstudiante = new Estudiante("Carlos", "Alberto", "aasas@hjsh.com", "123123");
