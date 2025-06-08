@@ -69,20 +69,55 @@ public class EstudianteDAO {
         return false;
     }
 
+    public boolean agregarEstudiante(Estudiante estudiante) {
+        PreparedStatement preparedStatement;
+        Connection conexion = Conexion.getConexion();
+        String sql = "INSERT INTO estudiante (nombre, apellido, email, telefono) VALUES (?, ?, ?, ?)";
+        try{
+            preparedStatement = conexion.prepareStatement(sql);
+            preparedStatement.setString(1, estudiante.getNombre());
+            preparedStatement.setString(2, estudiante.getApellido());
+            preparedStatement.setString(3, estudiante.getCorreo());
+            preparedStatement.setString(4, estudiante.getTelefono());
+            preparedStatement.execute();
+            return true;
+        } catch (Exception e) {
+            System.out.println("Error al agregar estudiante: " + e.getMessage());
+        } finally {
+            try {
+                conexion.close();
+            } catch (Exception e) {
+                System.out.println("Error al cerrar recursos: " + e.getMessage());
+            }
+        }
+        return false;
+    }
+
     public static void main(String[] args) {
         var estudiantes = new EstudianteDAO();
+
+        //agregar estudiante
+        var nuevoEstudiante = new Estudiante("Carlos", "Alberto", "aasas@hjsh.com", "123123");
+        var agregado = estudiantes.agregarEstudiante(nuevoEstudiante);
+        if (agregado) {
+            System.out.println("Estudiante agregado exitosamente: " + nuevoEstudiante);
+        } else {
+            System.out.println("Error al agregar estudiante.");
+        }
+
+        //listar estudiantes
         System.out.println("Listando estudiantes...");
         List<Estudiante> listaEstudiantes = estudiantes.listarEstudiantes();
         listaEstudiantes.forEach(System.out::println);
 
         //byId
-        var estudiante1 = new Estudiante(2);
-        System.out.println("Buscando estudiante por ID...");
-        var encontrado = estudiantes.findEstudianteById(estudiante1);
-        if (encontrado) {
-            System.out.println("Estudiante encontrado: " + estudiante1);
-        } else {
-            System.out.println("Estudiante no encontrado.");
-        }
+//        var estudiante1 = new Estudiante(2);
+//        System.out.println("Buscando estudiante por ID...");
+//        var encontrado = estudiantes.findEstudianteById(estudiante1);
+//        if (encontrado) {
+//            System.out.println("Estudiante encontrado: " + estudiante1);
+//        } else {
+//            System.out.println("Estudiante no encontrado.");
+//        }
     }
 }
